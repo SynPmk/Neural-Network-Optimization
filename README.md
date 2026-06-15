@@ -8,7 +8,9 @@ I wanted to find a way to make Physics-Informed Neural Networks (PINNs) run fast
 # Theory :
 
 The physics of this malware movement is governed by a 1D Reaction Diffusion partial differential equation:
-u_t = D * u_xx + R * u * (1 - u)
+∂u/∂t = (D * (∂²u/∂x²)) + (R * u * (1 - u))
+
+u = u(x,t).
 
 # Procedure :
 
@@ -23,8 +25,9 @@ iii. I then built a custom benchmarking engine using PyTorch and Matplotlib to r
 # Results and Observations :
 
 Running this experiment taught me a massive lesson about the realities of training physics-informed AI models:
+
 i. The Speed-Accuracy Trade-off is Real: My proposed model cut trainable parameters down by an incredible 98.60%. Because of this, it ran 2.38 times faster than the baseline. However, because it relies on random, static shapes rather than actively learning new ones, its final convergence loss was slightly higher, 0.000067 vs the baseline's 0.000016. For a real-time cyber defense system on edge hardware, this tiny loss in accuracy is a totally acceptable tradeoff for cutting training time in half.
 
-ii. The "Autograd" Bottleneck: My biggest breakthrough in understanding was realizing why a 98.6% reduction in parameters didn't result in a 98% reduction in runtime. In a PINN, the real performance killer isn't updating the weights—it is calculating the physics derivatives (u_xx and u_t). Even though my hidden layer weights were frozen, PyTorch's autograd engine still had to travel all the way back through those layers to calculate how the output changed relative to the input coordinates (x, t).
+ii. The "Autograd" Bottleneck: My biggest breakthrough in understanding was realizing why a 98.6% reduction in parameters didn't result in a 98% reduction in runtime. In a PINN, the real performance killer isn't updating the weights—it is calculating the physics derivatives (∂²u/∂x² and ∂u/∂t). Even though my hidden layer weights were frozen, PyTorch's autograd engine still had to travel all the way back through those layers to calculate how the output changed relative to the input coordinates (x, t).
 
 iii. Finally, I proved that freezing random projection layers is a highly viable way to strip away optimizer memory overhead. This approach makes PINNs practical for resource-constrained environments, even if the automatic differentiation step keeps a hard cap on raw execution speed.
