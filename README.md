@@ -32,4 +32,6 @@ ii. The "Autograd" Bottleneck: One of my significant understandings was realizin
 
 iii. Finally, I proved that freezing random projection layers is a highly viable way to strip away optimizer memory overhead. This approach makes PINNs practical for resource-constrained environments, even if the automatic differentiation step keeps a hard cap on raw execution speed.
 
+Following is the link to directly run the code in Google Colab :
+
 https://colab.research.google.com/drive/1qRK8eOB1vFFkugd1Dgw1OrSDTwUbhRGE?usp=sharing
